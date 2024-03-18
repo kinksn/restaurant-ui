@@ -1,30 +1,52 @@
 "use client";
 
+import { ProductType } from "@/types/types";
+import { useCartStore } from "@/utils/store";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
-type Props = {
-  price: number;
-  id: number;
-  options?: { title: string; additionalPrice: number }[];
-};
-
-const Price = ({ price, id, options }: Props) => {
-  const [total, setTotal] = useState(price);
+// カートに追加される商品の値段を決定するコンポーネント
+// 追加数に応じた合計金額の計算など行っている
+const Price = ({ product }: {product: ProductType}) => {
+  // 値段の合計
+  const [total, setTotal] = useState(product.price);
+  // 商品数の合計
   const [quantity, setQuantity] = useState(1);
+  // optional配列の先頭をデフォルト選択
   const [selected, setSelected] = useState(0);
+
+  const {addToCart} = useCartStore();
+
+  // useEffect(() => {
+  //   useCartStore.persist.rehydrate();
+  // },[])
 
   useEffect(() => {
     setTotal(
-      quantity * (options ? price + options[selected].additionalPrice : price)
+      quantity * product.price + (product.options?.[selected]?.additionalPrice ?? 0)
     );
-  }, [quantity, selected, options, price]);
+  }, [quantity, selected, product]);
+
+  const handleCart = () => {
+    addToCart({
+      id: product.id,
+      title: product.title,
+      img: product.img,
+      price: total,
+      ...(product.options?.length && {
+        optionTitle: product.options[selected].title,
+      }),
+      quantity: quantity,
+    });
+    toast.success('The product add to the cart!');
+  }
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-2xl font-bold">${total.toFixed(2)}</h2>
+      <h2 className="text-2xl font-bold">${total}</h2>
       {/* OPTIONS CONTAINER */}
       <div className="flex gap-4">
-        {options?.map((option, index) => (
+        {!!product.options?.length && product.options?.map((option, index) => (
           <button
             key={option.title}
             className="min-w-[6rem] p-2 ring-1 ring-red-400 rounded-md"
@@ -58,7 +80,7 @@ const Price = ({ price, id, options }: Props) => {
           </div>
         </div>
         {/* CART BUTTON */}
-        <button className="uppercase w-56 bg-red-500 text-white p-3 ring-1 ring-red-500">
+        <button className="uppercase w-56 bg-red-500 text-white p-3 ring-1 ring-red-500" onClick={handleCart}>
           Add to Cart
         </button>
       </div>

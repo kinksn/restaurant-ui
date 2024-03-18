@@ -1,7 +1,7 @@
 import { prisma } from "@/utils/connect";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PUT = async (req: NextRequest, { params }: { params: { id: string }}) => {
+export const POST = async (req: NextRequest, { params }: { params: { id: string }}) => {
   const { id } = params;
 
   try {

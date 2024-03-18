@@ -20,7 +20,7 @@ const OrdersPage = () => {
 
   const { isLoading, error, data } = useQuery({
     queryKey: ['orders'],
-    queryFn: () =>
+    queryFn: (): Promise<OrderType[]> =>
       fetch('http://localhost:3000/api/orders').then((res) => res.json()),
   });
 
@@ -29,7 +29,7 @@ const OrdersPage = () => {
   const mutation = useMutation({
     mutationFn: ({id, status}: { id: string; status: string }) => {
       return fetch(`http://localhost:3000/api/orders/${id}`, {
-        method: "PUT",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -66,7 +66,7 @@ const OrdersPage = () => {
           </tr>
         </thead>
         <tbody>
-          {data.map((item: OrderType) =>
+          {data?.map((item) =>
             <tr className={`${item.status !== "delivaried" && "bg-red-50"}`} key={item.id}>
               <td className="hidden md:block py-6 px-1">{item.id}</td>
               <td className="py-6 px-1">{item.createdAt.toString().slice(0,10)}</td>
