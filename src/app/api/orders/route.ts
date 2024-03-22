@@ -1,6 +1,6 @@
 import { getAuthSession } from "@/utils/auth";
 import { prisma } from "@/utils/connect";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // FETCH ALL ORDERS
 export const GET = async () => {
@@ -38,9 +38,44 @@ export const GET = async () => {
       { status: 401 }
     )
   }
-  
 };
 
-export const POST = () => {
-  return new NextResponse('Hello', { status: 200 })
+// CREATE ORDER
+export const POST = async (req: NextRequest) => {
+  const session = await getAuthSession();
+
+  if(session) {
+    try {
+      const body = await req.json();
+      if(session.user.isAdmin) {
+        const order = await prisma.order.create({
+          data: body
+        });
+        return new NextResponse(
+          JSON.stringify(order),
+          { status: 201 }
+        );
+      }
+      const orders = await prisma.order.findMany({
+        where: {
+          userEmail: session.user.email!
+        }
+      });
+      return new NextResponse(
+        JSON.stringify(orders),
+        { status: 200 }
+      )
+    } catch(err) {
+      console.error(err);
+      return new NextResponse(
+        JSON.stringify({ message: 'Something went wrong!' }),
+        { status: 500 }
+      );
+    }
+  } else {
+    return new NextResponse(
+      JSON.stringify({ message: "Your are not authenticated!"}),
+      { status: 401 }
+    )
+  }
 };
