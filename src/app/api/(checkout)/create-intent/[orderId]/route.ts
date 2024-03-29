@@ -29,7 +29,7 @@ export const POST = async (req: NextRequest, { params }: { params: { orderId: st
       where: {
         id: orderId,
       },
-      data: { intent_id: paymentIntent.id}
+      data: { intent_id: paymentIntent.id }
     })
 
     return new NextResponse(JSON.stringify({ clientSecret: paymentIntent.client_secret}), {

@@ -19,33 +19,46 @@
 import React, { useState, useEffect } from "react";
 
 const CountDown = () => {
-  
-  let difference = +new Date(`10/10/2023`) - +new Date();
-  const [delay, setDelay] = useState(difference);
+  const [hasMounted, setHasMounted] = useState(false);
+  useEffect(() => {
+    setHasMounted(true); // クライアントサイドでのレンダリング時に true に設定
+  }, []);
 
-  const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-  const h = Math.floor((difference / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((difference / 1000 / 60) % 60);
-  const s = Math.floor((difference / 1000) % 60);
+  const calculateTimeLeft = () => {
+    const difference = +new Date('2024/4/9') - +new Date();
+    return {
+      d: Math.floor(difference / (1000 * 60 * 60 * 24)),
+      h: Math.floor((difference / (1000 * 60 * 60)) % 24),
+      m: Math.floor((difference / 1000 / 60) % 60),
+      s: Math.floor((difference / 1000) % 60),
+    };
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
   useEffect(() => {
+    if (!hasMounted) return; // クライアントサイドでのレンダリングが完了するまで待つ
+
     const timer = setInterval(() => {
-      setDelay(delay - 1);
+      setTimeLeft(calculateTimeLeft());
     }, 1000);
 
-    if (delay === 0) {
-      clearInterval(timer);
-    }
+    return () => clearInterval(timer);
+  }, [hasMounted]); // 依存配列に hasMounted を追加
 
-    return () => {
-      clearInterval(timer);
-    };
-  });
+  // クライアントサイドでのみレンダリングを実施
+  if (!hasMounted) {
+    return null; // またはローディングステート等を表示
+  }
+
+  const { d, h, m, s } = timeLeft;
+
   return (
     <span className="font-bold text-5xl text-yellow-300">
       {d}:{h}:{m}:{s}
     </span>
   );
 };
+
 
 export default CountDown;

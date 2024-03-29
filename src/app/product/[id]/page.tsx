@@ -15,7 +15,7 @@ const getData = async (id: string) => {
   )
 
   if(!res.ok) {
-    return new Error("Failed!")
+    return new Error("Failed!");
   }
 
   return res.json()

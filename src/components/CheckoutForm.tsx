@@ -6,9 +6,9 @@ import AddressForm from "./AddressForm";
 
 const CheckoutForm = () => {
   const stripe = useStripe();
+  // useElementsは <Elements /> providerの子孫要素でしか使うことができない
   const elements = useElements();
 
-  const [email, setEmail] = useState(null);
   const [message, setMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -54,6 +54,12 @@ const CheckoutForm = () => {
 
     setIsLoading(true);
 
+    const addressElement = elements.getElement('address');
+    const address = await addressElement?.getValue();
+
+    //  {"line1":"渋谷区本町","line2":"本町グリーンハイツ201","city":"渋谷区","country":"JP","postal_code":"151-0071","state":"東京都"}
+    console.log("address = ", JSON.stringify(address?.value.address));
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
@@ -78,9 +84,9 @@ const CheckoutForm = () => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
-      <LinkAuthenticationElement
+      {/* <LinkAuthenticationElement
         id="link-authentication-element"
-      />
+      /> */}
       <PaymentElement id="payment-element" options={{
         layout: "tabs",
       }} />
