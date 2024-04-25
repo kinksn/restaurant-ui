@@ -1,6 +1,6 @@
 import { ActionTypes, CartType } from "@/types/types";
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
+import { persist, devtools } from "zustand/middleware";
 
 // カートに商品が無い時のステータス
 const INITIAL_STATE = {
@@ -11,7 +11,7 @@ const INITIAL_STATE = {
 
 // カートの状態を管理するstore
 // itemが追加された商品で、productがstoreの最新の商品
-export const useCartStore = create(persist<CartType & ActionTypes>((set, get) => ({
+export const useCartStore = create(devtools(persist<CartType & ActionTypes>((set, get) => ({
   products: INITIAL_STATE.products,
   totalItems: INITIAL_STATE.totalItems,
   totalPrice: INITIAL_STATE.totalPrice, 
@@ -23,14 +23,15 @@ export const useCartStore = create(persist<CartType & ActionTypes>((set, get) =>
 
     // itemがstore.productに存在していればアップデート
     if (productInState) {
-      const updatedProducts = products.map((product) =>
-        product.id === productInState.id
-          ? {
-            ...item,
-            quantity: item.quantity + product.quantity,
-            price: item.price + product.price,
-          }
-          : item
+      const updatedProducts = products.map((product) => {
+        return product.id === productInState.id
+        ? {
+          ...item,
+          quantity: item.quantity + product.quantity,
+          price: item.price + product.price,
+        }
+        : product
+      }
       );
       set((state) => ({
         products: updatedProducts,
@@ -59,4 +60,4 @@ export const useCartStore = create(persist<CartType & ActionTypes>((set, get) =>
     });
   },
   // persist関数を使ってlocalStrageに"cart"というキーで保存している
-}), {name: "cart", skipHydration: true }));
+}), {name: "cart", skipHydration: true })));

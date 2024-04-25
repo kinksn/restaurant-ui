@@ -18,6 +18,7 @@ export type ProductType = {
   // プロジェクトでは製品詳細ページ（/product/${id} でoptionsを使ってサイズのバリエーションを表現している
   // 例）{"title":"midium","additionalPrice":2}, {"title": "large"...}
   options?: { title: string, additionalPrice: number }[]; 
+  catSlug?: string;
 };
 
 // 注文の型定義
@@ -37,7 +38,7 @@ export type CartItemType = {
   title: string;
   img?: string;
   price: number;
-  optionTitle?: string;
+  optionTitle?: string; // pizzaでやってる「midium」「lagrge」のオプションなど
   quantity: number;
 };
 

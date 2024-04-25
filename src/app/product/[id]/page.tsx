@@ -42,7 +42,7 @@ const SingleProductPage = async ({ params }: PropsType) => {
         <p>{singleProduct.desc}</p>
         <Price product={singleProduct} />
       </div>
-      <DeleteButton id={singleProduct.id} />
+      <DeleteButton product={singleProduct} />
     </div>
   );
 };

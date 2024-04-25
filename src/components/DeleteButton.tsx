@@ -1,22 +1,24 @@
 "use client"
 
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { toast } from 'react-toastify'
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { toast } from 'react-toastify';
+import { ProductType } from '@/types/types';
 
-export const DeleteButton = ({ id }: { id: string }) => {
+export const DeleteButton = ({ product }: { product: ProductType }) => {
   const {data:session, status} = useSession();
   const router = useRouter();
 
   const handleDelete = async () => {
-    const res = await fetch(`http://localhost:3000/api/products/${id}`, {
+    const res = await fetch(`http://localhost:3000/api/products/${product.id}`, {
       method: "DELETE",
     });
 
     if(res.status === 200) {
-      router.push('/');
+      router.push(`/menu/${product.catSlug}`);
+      router.refresh();
       toast("The product was been deleted")
     } else {
       const data = await res.json();

@@ -6,7 +6,6 @@ export const PUT = async (req: NextRequest, { params }: { params: { intentId: st
   const { intentId } = params;
 
   try {
-
     await prisma.order.update({
       where: {
         intent_id: intentId,

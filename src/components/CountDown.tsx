@@ -16,6 +16,7 @@
 
 // WITHOUT A LIBRARY
 "use client"
+
 import React, { useState, useEffect } from "react";
 
 const CountDown = () => {
@@ -25,7 +26,7 @@ const CountDown = () => {
   }, []);
 
   const calculateTimeLeft = () => {
-    const difference = +new Date('2024/4/9') - +new Date();
+    const difference = +new Date('2024-04-30T00:00:00Z') - +new Date();
     return {
       d: Math.floor(difference / (1000 * 60 * 60 * 24)),
       h: Math.floor((difference / (1000 * 60 * 60)) % 24),

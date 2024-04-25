@@ -16,25 +16,25 @@ type Option = {
   additionalPrice: number;
 };
 
+const initialInputs = {
+  title: "",
+  desc: "",
+  price: 0,
+  catSlug: "",
+};
+
+const initialOption = {
+  title: "",
+  additionalPrice: 0,
+};
+
 const AddPage = () => {
   const {data: session, status} = useSession();
-  const [inputs, setInputs] = useState<Inputs>({
-    title: "",
-    desc: "",
-    price: 0,
-    catSlug: "",
-  });
-
-  const [option, setOption] = useState<Option>({
-    title: "",
-    additionalPrice: 0,
-  });
-
+  const [inputs, setInputs] = useState<Inputs>(initialInputs);
+  const [option, setOption] = useState<Option>(initialOption);
   const [options, setOptions] = useState<Option[]>([]);
-
   const [file, setFile] = useState<File>();
-
-
+  // const formRef = useRef<HTMLFormElement>(null);
 
   const router = useRouter();
 
@@ -66,6 +66,8 @@ const AddPage = () => {
     setFile(item);
   }
 
+  // cloudinaryに画像をアップロードする関数
+  // 戻り値は画像のurl文字列
   const upload = async () => {
     const data = new FormData();
     data.append('file', file!);
@@ -73,11 +75,16 @@ const AddPage = () => {
     try {
       const res = await fetch("https://api.cloudinary.com/v1_1/dpodjvr9j/image/upload", {
         method: "POST",
-        headers: {"Content-Type": "multipart/form-data"},
+        /* 
+         * 何らかの理由でプリフライトリクエスト実行時にヘッダー情報を受け取らない場合エラーになる
+         * headersをコメントアウトすることでアップロードすることができた
+         * @see @link{https://support.cloudinary.com/hc/en-us/community/posts/360010811739-Access-Control-Allow-Origin}
+        */
+        // headers: {"Content-Type": "multipart/form-data"},
         body: data,
       });
       const resData = await res.json();
-    return resData.url;
+      return resData.url;
     } catch(error) {
       console.error(error)
     }
@@ -97,9 +104,14 @@ const AddPage = () => {
         })
       });
 
-      const data = await res.json();
+      // if (formRef.current !== null) {
+      //   formRef.current.reset();
+      //   setInputs(initialInputs);
+      //   setOptions([]);
+      // }
 
-      // router.push(`/product/${data.id}`);
+      const data = await res.json();
+      router.push(`/product/${data.id}`);
     } catch(error) {
       console.log(error);
     }

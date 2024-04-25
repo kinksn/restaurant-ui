@@ -15,7 +15,7 @@ const Price = ({ product }: {product: ProductType}) => {
   // optional配列の先頭をデフォルト選択
   const [selected, setSelected] = useState(0);
 
-  const {addToCart} = useCartStore();
+  const { addToCart } = useCartStore();
 
   // useEffect(() => {
   //   useCartStore.persist.rehydrate();
