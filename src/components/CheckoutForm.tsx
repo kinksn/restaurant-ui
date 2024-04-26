@@ -4,7 +4,11 @@ import { LinkAuthenticationElement, PaymentElement, useElements, useStripe } fro
 import { useEffect, useState } from "react";
 import AddressForm from "./AddressForm";
 
-const CheckoutForm = () => {
+type Props = {
+  id: string;
+}
+
+const CheckoutForm = ({ id }: Props) => {
   const stripe = useStripe();
   // useElementsは <Elements /> providerの子孫要素でしか使うことができない
   const elements = useElements();
@@ -60,11 +64,23 @@ const CheckoutForm = () => {
     //  {"line1":"渋谷区本町","line2":"本町グリーンハイツ201","city":"渋谷区","country":"JP","postal_code":"151-0071","state":"東京都"}
     console.log("address = ", JSON.stringify(address?.value.address));
 
+    try {
+      await fetch(`http://localhost:3000/api/orders/${id}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+          address: address,
+        }),
+      })
+    } catch(error) {
+      console.error(error);
+    }
+
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:3000/success",
+        return_url: `http://localhost:3000/success`,
       },
     });
 
