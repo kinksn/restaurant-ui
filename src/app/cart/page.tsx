@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 const CartPage = () => {
-  const {products, totalItems, totalPrice, removeFromCart} = useCartStore();
+  const {products, totalItems, totalPrice, removeFromCart, clearCart} = useCartStore();
   const {data: session} = useSession();
   const router = useRouter()
 
@@ -42,6 +42,7 @@ const CartPage = () => {
       {/* PRODUCTS CONTAINER */}
       <div className="h-1/2 p-4 flex flex-col justify-center overflow-scroll lg:h-full lg:w-2/3 2xl:w-1/2 lg:px-20 xl:px-40">
         {/* SINGLE ITEM */}
+        {/* storeから取得した商品情報を全て表示 */}
         {products.map((item) => (
           <div className="flex items-center justify-between mb-4" key={item.id}>
             {item.img && <Image src={item.img} style={{ width: "auto", height: "auto"}} priority alt="" width={100} height={100} />}
@@ -75,6 +76,9 @@ const CartPage = () => {
         </div>
         <button className="bg-red-500 text-white p-3 rounded-md w-1/2 self-end" onClick={handleCheckout}>
           CHECKOUT
+        </button>
+        <button className="bg-blue-500 text-white p-3 rounded-md w-1/2 self-end" onClick={clearCart}>
+          Clear Cart
         </button>
       </div>
     </div>

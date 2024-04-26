@@ -59,5 +59,12 @@ export const useCartStore = create(devtools(persist<CartType & ActionTypes>((set
       }
     });
   },
+  clearCart() {
+    set(() => ({
+      products: INITIAL_STATE.products,
+      totalItems: INITIAL_STATE.totalItems,
+      totalPrice: INITIAL_STATE.totalPrice, 
+    }))
+  }
   // persist関数を使ってlocalStrageに"cart"というキーで保存している
-}), {name: "cart", skipHydration: true })));
+}), { name: "cart", skipHydration: true })));

@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // This is your test secret API key.
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export const POST = async (req: NextRequest, { params }: { params: { orderId: string }}) => {
+export const POST = async (_req: NextRequest, { params }: { params: { orderId: string }}) => {
   const { orderId } = params;
   const order = await prisma.order.findUnique({
     where: {

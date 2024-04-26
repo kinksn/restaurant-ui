@@ -21,6 +21,16 @@ export type ProductType = {
   catSlug?: string;
 };
 
+// 注文に含める住所情報
+export type AddressType = {
+  line1?: string;
+  line2?: string;
+  city?: string;
+  country?: string;
+  postal_code?: string;
+  state?: string;
+}
+
 // 注文の型定義
 export type OrderType = {
   id: string;
@@ -29,6 +39,7 @@ export type OrderType = {
   status: string; // 注文の状態（例：「発送済み」、「処理中」など）
   createdAt: Date;
   userEmail: string;
+  address?: AddressType;
   intent_id?: String; // 支払い処理に関連するID
 }
 
@@ -53,4 +64,5 @@ export type CartType = {
 export type ActionTypes = {
   addToCart: (item:CartItemType) => void;
   removeFromCart: (item:CartItemType) => void;
+  clearCart: () => void;
 }
